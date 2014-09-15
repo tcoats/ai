@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>physics.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="ai.html">
+                ai.coffee
+              </a>
+            
+              
+              <a class="source" href="async.html">
+                async.coffee
+              </a>
+            
+              
+              <a class="source" href="boid.html">
+                boid.coffee
+              </a>
+            
+              
+              <a class="source" href="colors.html">
+                colors.coffee
+              </a>
+            
+              
+              <a class="source" href="display.html">
+                display.coffee
+              </a>
+            
+              
+              <a class="source" href="hub.html">
+                hub.coffee
+              </a>
+            
+              
+              <a class="source" href="init.html">
+                init.coffee
+              </a>
+            
+              
+              <a class="source" href="inject.html">
+                inject.coffee
+              </a>
+            
+              
+              <a class="source" href="physics.html">
+                physics.coffee
+              </a>
+            
+              
+              <a class="source" href="sequencer.html">
+                sequencer.coffee
+              </a>
+            
+              
+              <a class="source" href="statistics.html">
+                statistics.coffee
+              </a>
+            
+              
+              <a class="source" href="template.html">
+                template.coffee
+              </a>
+            
+              
+              <a class="source" href="unit.html">
+                unit.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>physics.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>define [<span class="hljs-string">'inject'</span>, <span class="hljs-string">'p2'</span>], <span class="hljs-function"><span class="hljs-params">(inject, p2)</span> -&gt;</span>
+	<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Physics</span></span>
+		<span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span>
+			<span class="hljs-property">@maxvelocity</span> = <span class="hljs-number">100</span>
+			<span class="hljs-property">@defaultsteeringforce</span> = <span class="hljs-number">1200</span>
+			<span class="hljs-property">@entities</span> = []
+			<span class="hljs-property">@world</span> = <span class="hljs-keyword">new</span> p2.World <span class="hljs-attribute">gravity</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]
+			
+			inject.bind <span class="hljs-string">'step'</span>, <span class="hljs-property">@step</span>
+			inject.bind <span class="hljs-string">'register physics'</span>, <span class="hljs-property">@register</span>
+			inject.bind <span class="hljs-string">'apply force'</span>, <span class="hljs-property">@apply</span>
+			inject.bind <span class="hljs-string">'scale to max velocity'</span>, <span class="hljs-property">@scaletomaxvelocity</span>
+			inject.bind <span class="hljs-string">'limit to max velocity'</span>, <span class="hljs-property">@limittomaxvelocity</span>
+			inject.bind <span class="hljs-string">'calculate seeking'</span>, <span class="hljs-property">@calculateseek</span>
+			inject.bind <span class="hljs-string">'calculate steering'</span>, <span class="hljs-property">@calculatesteering</span>
+			inject.bind <span class="hljs-string">'each by distance'</span>, <span class="hljs-property">@eachbydistance</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Integrate</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		<span class="hljs-attribute">step</span>:<span class="hljs-function"> =&gt;</span>
+			<span class="hljs-property">@world</span>.step <span class="hljs-number">1</span> / <span class="hljs-number">60</span>
+			<span class="hljs-keyword">for</span> entity <span class="hljs-keyword">in</span> <span class="hljs-property">@entities</span>
+				length = p2.vec2.len entity.b.velocity
+				<span class="hljs-keyword">if</span> length &gt; <span class="hljs-property">@maxvelocity</span>
+					p2.vec2.normalize entity.b.velocity, entity.b.velocity
+					p2.vec2.scale entity.b.velocity, entity.b.velocity, <span class="hljs-property">@maxvelocity</span>
+				entity.b.position[<span class="hljs-number">0</span>] = width + <span class="hljs-number">10</span> <span class="hljs-keyword">if</span> entity.b.position[<span class="hljs-number">0</span>] &lt; -<span class="hljs-number">10</span>
+				entity.b.position[<span class="hljs-number">0</span>] = -<span class="hljs-number">10</span> <span class="hljs-keyword">if</span> entity.b.position[<span class="hljs-number">0</span>] &gt; width + <span class="hljs-number">10</span>
+				entity.b.position[<span class="hljs-number">1</span>] = height + <span class="hljs-number">10</span> <span class="hljs-keyword">if</span> entity.b.position[<span class="hljs-number">1</span>] &lt; -<span class="hljs-number">10</span>
+				entity.b.position[<span class="hljs-number">1</span>] = -<span class="hljs-number">10</span> <span class="hljs-keyword">if</span> entity.b.position[<span class="hljs-number">1</span>] &gt; height + <span class="hljs-number">10</span>
+		
+		<span class="hljs-attribute">register</span>: <span class="hljs-function"><span class="hljs-params">(entity, n, p, v)</span> =&gt;</span>
+			@[n] entity, p, v <span class="hljs-keyword">if</span> @[n]?
+		
+		<span class="hljs-attribute">boid</span>: <span class="hljs-function"><span class="hljs-params">(entity, p, v)</span> =&gt;</span>
+			body = <span class="hljs-keyword">new</span> p2.Body <span class="hljs-attribute">mass</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">position</span>: p, <span class="hljs-attribute">velocity</span>: v
+			body.damping = <span class="hljs-number">0</span>
+			shape = <span class="hljs-keyword">new</span> p2.Circle <span class="hljs-number">8</span>
+			body.addShape shape
+			<span class="hljs-property">@world</span>.addBody body
+			<span class="hljs-property">@entities</span>.push entity.phys =
+				<span class="hljs-attribute">b</span>: body
+				<span class="hljs-attribute">s</span>: shape
+				<span class="hljs-attribute">e</span>:<span class="hljs-function"> -&gt;</span> entity
+		
+		<span class="hljs-attribute">unit</span>: <span class="hljs-function"><span class="hljs-params">(entity, p, v)</span> =&gt;</span>
+			body = <span class="hljs-keyword">new</span> p2.Body <span class="hljs-attribute">mass</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">position</span>: p, <span class="hljs-attribute">velocity</span>: v
+			body.damping = <span class="hljs-number">0.9</span>
+			shape = <span class="hljs-keyword">new</span> p2.Circle <span class="hljs-number">8</span>
+			body.addShape shape
+			<span class="hljs-property">@world</span>.addBody body
+			<span class="hljs-property">@entities</span>.push entity.phys =
+				<span class="hljs-attribute">b</span>: body
+				<span class="hljs-attribute">s</span>: shape
+				<span class="hljs-attribute">e</span>:<span class="hljs-function"> -&gt;</span> entity
+		
+		<span class="hljs-attribute">apply</span>: <span class="hljs-function"><span class="hljs-params">(entity, f)</span> =&gt;</span>
+			p2.vec2.add entity.phys.b.force, entity.phys.b.force, f
+		
+		<span class="hljs-attribute">scaletomaxvelocity</span>: <span class="hljs-function"><span class="hljs-params">(velocity)</span> =&gt;</span>
+			p2.vec2.normalize velocity, velocity
+			p2.vec2.scale velocity, velocity, <span class="hljs-property">@maxvelocity</span>
+		
+		<span class="hljs-attribute">limittomaxvelocity</span>: <span class="hljs-function"><span class="hljs-params">(velocity)</span> =&gt;</span>
+			len = p2.vec2.len velocity
+			len = Math.min len, <span class="hljs-property">@maxvelocity</span>
+			p2.vec2.normalize velocity, velocity
+			p2.vec2.scale velocity, velocity, len
+		
+		<span class="hljs-attribute">_steer</span>: <span class="hljs-function"><span class="hljs-params">(source, target, scale)</span> =&gt;</span>
+			steering = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]
+			p2.vec2.sub steering, target, source
+			p2.vec2.normalize steering, steering
+			p2.vec2.scale steering, steering, scale
+			steering
+		
+		<span class="hljs-attribute">calculateseek</span>: <span class="hljs-function"><span class="hljs-params">(source, target)</span> =&gt;</span>
+			<span class="hljs-property">@_steer</span> source, target, <span class="hljs-property">@maxvelocity</span> 
+		
+		<span class="hljs-attribute">calculatesteering</span>: <span class="hljs-function"><span class="hljs-params">(source, target)</span> =&gt;</span>
+			<span class="hljs-property">@_steer</span> source, target, <span class="hljs-property">@defaultsteeringforce</span>
+		
+		<span class="hljs-attribute">eachbydistance</span>: <span class="hljs-function"><span class="hljs-params">(p, r, cb)</span> =&gt;</span>
+			<span class="hljs-keyword">for</span> entity <span class="hljs-keyword">in</span> <span class="hljs-property">@entities</span>
+				distance = p2.vec2.dist p, entity.b.position
+				<span class="hljs-keyword">continue</span> <span class="hljs-keyword">if</span> distance &gt; r
+				cb distance, entity.e()
+			
+	<span class="hljs-keyword">new</span> Physics()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
