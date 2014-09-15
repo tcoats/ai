@@ -18,12 +18,18 @@ define 'game', ['inject', 'plugins'], (inject) ->
 	# 	inject.one('register display') e, name
 	
 	
-	for _ in [0..100]
+	for _ in [0..99]
 		u = {}
 		inject.one('register ai') u, 'unit'
 		inject.one('register statistics') u
 		inject.one('register physics') u, 'unit', [random(width), random(height)], [0, 0]
 		inject.one('register display') u, 'unit'
+	chosenone =
+		neo: yes
+	inject.one('register ai') chosenone, 'unit'
+	inject.one('register statistics') chosenone
+	inject.one('register physics') chosenone, 'unit', [random(width), random(height)], [0, 0]
+	inject.one('register display') chosenone, 'unit'
 	return
 	# u1 = {}
 	# inject.one('register ai') u1, 'unit'

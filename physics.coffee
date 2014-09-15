@@ -14,7 +14,10 @@ define ['inject', 'p2'], (inject, p2) ->
 			inject.bind 'calculate seeking', @calculateseek
 			inject.bind 'calculate steering', @calculatesteering
 			inject.bind 'each by distance', @eachbydistance
-		
+			inject.bind 'calculate perpendicular', @calculateperpendicular
+			inject.bind 'calculate perpendicular 2', @calculateperpendicular2
+			inject.bind 'anticlockwise', @anticlockwise
+	
 		# Integrate
 		step: =>
 			@world.step 1 / 60
@@ -78,6 +81,32 @@ define ['inject', 'p2'], (inject, p2) ->
 		
 		calculatesteering: (source, target) =>
 			@_steer source, target, @defaultsteeringforce
+		
+		calculateperpendicular: (from, to, point) =>
+			unit = [0, 0]
+			p2.vec2.sub unit, to, from
+			p2.vec2.normalize unit, unit
+			calc = [0, 0]
+			p2.vec2.sub calc, point, from
+			lambda = p2.vec2.dot unit, calc
+			p2.vec2.scale calc, unit, lambda
+			p2.vec2.add calc, from, calc
+			calc
+		
+		anticlockwise: (vec) =>
+			[-vec[1], vec[0]]
+		
+		calculateperpendicular2: (from, to, point) =>
+			unit = [0, 0]
+			p2.vec2.sub unit, to, from
+			p2.vec2.normalize unit, unit
+			unit = @anticlockwise unit
+			calc = [0, 0]
+			p2.vec2.sub calc, point, from
+			lambda = p2.vec2.dot unit, calc
+			p2.vec2.scale calc, unit, lambda
+			p2.vec2.add calc, from, calc
+			calc
 		
 		eachbydistance: (p, r, cb) =>
 			for entity in @entities
