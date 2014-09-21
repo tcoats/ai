@@ -1,10 +1,7 @@
-define ['inject', 'boid', 'unit'], (inject, Boid, Unit) ->
+define ['inject'], (inject) ->
 	class AI
 		constructor: ->
 			@entities = []
-			@types =
-				boid: Boid
-				unit: Unit
 			inject.bind 'setup', @setup
 			inject.bind 'step', @step
 			inject.bind 'register ai', @register
@@ -23,8 +20,8 @@ define ['inject', 'boid', 'unit'], (inject, Boid, Unit) ->
 			entity.step() for entity in @entities
 		
 		register: (entity, n) =>
-			return if !@types[n]?
-			entity.ai = new @types[n] entity, n
-			@entities.push entity.ai
+			require [n], (type) =>
+				entity.ai = new type entity, n
+				@entities.push entity.ai
 		
 	new AI()

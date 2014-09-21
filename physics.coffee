@@ -1,4 +1,15 @@
-define ['inject', 'p2'], (inject, p2) ->
+define [
+	'inject'
+	'p2'
+	'movement/rotate'
+	'movement/directions'
+	'movement/force'
+	'movement/steer'
+	'movement/velocity'
+	'movement/separate'
+	'movement/cohere'
+	'movement/align'
+], (inject, p2) ->
 	class Physics
 		constructor: ->
 			@maxvelocity = 100
@@ -8,16 +19,8 @@ define ['inject', 'p2'], (inject, p2) ->
 			
 			inject.bind 'step', @step
 			inject.bind 'register physics', @register
-			inject.bind 'apply force', @apply
-			inject.bind 'scale to max velocity', @scaletomaxvelocity
-			inject.bind 'limit to max velocity', @limittomaxvelocity
-			inject.bind 'calculate seeking', @calculateseek
-			inject.bind 'calculate steering', @calculatesteering
 			inject.bind 'each by distance', @eachbydistance
-			inject.bind 'calculate perpendicular', @calculateperpendicular
-			inject.bind 'calculate perpendicular 2', @calculateperpendicular2
-			inject.bind 'anticlockwise', @anticlockwise
-	
+		
 		# Integrate
 		step: =>
 			@world.step 1 / 60
@@ -47,7 +50,7 @@ define ['inject', 'p2'], (inject, p2) ->
 		
 		unit: (entity, p, v) =>
 			body = new p2.Body mass: 1, position: p, velocity: v
-			body.damping = 0.9
+			body.damping = 0
 			shape = new p2.Circle 8
 			body.addShape shape
 			@world.addBody body
@@ -55,58 +58,6 @@ define ['inject', 'p2'], (inject, p2) ->
 				b: body
 				s: shape
 				e: -> entity
-		
-		apply: (entity, f) =>
-			p2.vec2.add entity.phys.b.force, entity.phys.b.force, f
-		
-		scaletomaxvelocity: (velocity) =>
-			p2.vec2.normalize velocity, velocity
-			p2.vec2.scale velocity, velocity, @maxvelocity
-		
-		limittomaxvelocity: (velocity) =>
-			len = p2.vec2.len velocity
-			len = Math.min len, @maxvelocity
-			p2.vec2.normalize velocity, velocity
-			p2.vec2.scale velocity, velocity, len
-		
-		_steer: (source, target, scale) =>
-			steering = [0, 0]
-			p2.vec2.sub steering, target, source
-			p2.vec2.normalize steering, steering
-			p2.vec2.scale steering, steering, scale
-			steering
-		
-		calculateseek: (source, target) =>
-			@_steer source, target, @maxvelocity 
-		
-		calculatesteering: (source, target) =>
-			@_steer source, target, @defaultsteeringforce
-		
-		calculateperpendicular: (from, to, point) =>
-			unit = [0, 0]
-			p2.vec2.sub unit, to, from
-			p2.vec2.normalize unit, unit
-			calc = [0, 0]
-			p2.vec2.sub calc, point, from
-			lambda = p2.vec2.dot unit, calc
-			p2.vec2.scale calc, unit, lambda
-			p2.vec2.add calc, from, calc
-			calc
-		
-		anticlockwise: (vec) =>
-			[-vec[1], vec[0]]
-		
-		calculateperpendicular2: (from, to, point) =>
-			unit = [0, 0]
-			p2.vec2.sub unit, to, from
-			p2.vec2.normalize unit, unit
-			unit = @anticlockwise unit
-			calc = [0, 0]
-			p2.vec2.sub calc, point, from
-			lambda = p2.vec2.dot unit, calc
-			p2.vec2.scale calc, unit, lambda
-			p2.vec2.add calc, from, calc
-			calc
 		
 		eachbydistance: (p, r, cb) =>
 			for entity in @entities

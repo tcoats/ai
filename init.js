@@ -2,21 +2,20 @@
 define('plugins', ['statistics', 'ai', 'physics', 'display']);
 
 define('game', ['inject', 'plugins'], function(inject) {
-  var chosenone, u, _, _i;
-  for (_ = _i = 0; _i <= 99; _ = ++_i) {
-    u = {};
-    inject.one('register ai')(u, 'unit');
+  var chosenone, createunit, _, _i;
+  createunit = function(u) {
+    inject.one('register ai')(u, 'brains/unit');
     inject.one('register statistics')(u);
     inject.one('register physics')(u, 'unit', [random(width), random(height)], [0, 0]);
-    inject.one('register display')(u, 'unit');
+    return inject.one('register display')(u, 'unit');
+  };
+  for (_ = _i = 0; _i <= 49; _ = ++_i) {
+    createunit({});
   }
   chosenone = {
     neo: true
   };
-  inject.one('register ai')(chosenone, 'unit');
-  inject.one('register statistics')(chosenone);
-  inject.one('register physics')(chosenone, 'unit', [random(width), random(height)], [0, 0]);
-  inject.one('register display')(chosenone, 'unit');
+  return createunit(chosenone);
 });
 
 window.setup = function() {
@@ -24,7 +23,7 @@ window.setup = function() {
   requirejs.config({
     urlArgs: 'v=' + (new Date()).getTime(),
     paths: {
-      p2: 'p2.min'
+      p2: 'lib/p2.min'
     }
   });
   return requirejs(['inject', 'game'], function(inject) {
