@@ -9,6 +9,8 @@ define [
 	'movement/separate'
 	'movement/cohere'
 	'movement/align'
+	'movement/lineup'
+	'movement/squaregroup'
 ], (inject, p2) ->
 	class Physics
 		constructor: ->
@@ -37,21 +39,10 @@ define [
 		register: (entity, n, p, v) =>
 			@[n] entity, p, v if @[n]?
 		
-		boid: (entity, p, v) =>
+		person: (entity, p, v) =>
 			body = new p2.Body mass: 1, position: p, velocity: v
 			body.damping = 0
-			shape = new p2.Circle 8
-			body.addShape shape
-			@world.addBody body
-			@entities.push entity.phys =
-				b: body
-				s: shape
-				e: -> entity
-		
-		unit: (entity, p, v) =>
-			body = new p2.Body mass: 1, position: p, velocity: v
-			body.damping = 0
-			shape = new p2.Circle 8
+			shape = new p2.Circle 6
 			body.addShape shape
 			@world.addBody body
 			@entities.push entity.phys =

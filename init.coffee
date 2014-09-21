@@ -1,3 +1,5 @@
+requirejs.config paths: p2: 'lib/p2.min'
+
 # # AI Testbed
 define 'plugins', [
 	'statistics'
@@ -7,24 +9,28 @@ define 'plugins', [
 ]
 
 define 'game', ['inject', 'plugins'], (inject) ->
-	createunit = (u) ->
-		inject.one('register ai') u, 'brains/unit'
-		inject.one('register statistics') u
-		inject.one('register physics') u, 'unit',
+	ai = inject.one 'register ai'
+	stats = inject.one 'register statistics'
+	phys = inject.one 'register physics'
+	display = inject.one 'register display'
+	
+	createunit = (u, brain) ->
+		motif = brain
+		motif = 'neo' if u.neo?
+		ai u, "brains/#{brain}"
+		stats u
+		phys u, 'person',
 			[random(width), random(height)],
 			[0, 0]
-		inject.one('register display') u, 'unit'
-		
-	createunit {} for _ in [0..49]
-	chosenone = neo: yes
-	createunit chosenone
+		display u, motif
+	createunit {}, 'unit' for _ in [0..49]
+	
+	# Create neo for testing
+	window.neo = neo: yes
+	createunit window.neo, 'unit'
 
 window.setup = ->
 	createCanvas windowWidth, windowHeight
-	requirejs.config
-		# cache busting
-		urlArgs: 'v=' + (new Date()).getTime()
-		paths: p2: 'lib/p2.min'
 	requirejs ['inject', 'game'], (inject) ->
 		setup() for setup in inject.many 'setup'
 		render = yes

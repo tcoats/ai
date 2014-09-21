@@ -1,5 +1,5 @@
 define ['inject', 'p2'], (inject, p2) ->
-	inject.bind 'align', (entity) ->
+	inject.bind 'align', (entity, scale) ->
 		averagedirection = [0, 0]
 		count = 0
 		inject.one('each by distance') entity.phys.b.position, 50, (d, e) ->
@@ -10,5 +10,5 @@ define ['inject', 'p2'], (inject, p2) ->
 		
 		inject.one('scale to max velocity') averagedirection
 		force = inject.one('calculate steering') entity.phys.b.velocity, averagedirection
-		p2.vec2.scale force, force, 0.5
+		p2.vec2.scale force, force, scale
 		inject.one('apply force') entity, force

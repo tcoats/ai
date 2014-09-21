@@ -1,5 +1,5 @@
 define ['inject', 'p2'], (inject, p2) ->
-	inject.bind 'separate', (entity) ->
+	inject.bind 'separate', (entity, scale) ->
 		averagerepulsion = [0, 0]
 		inject.one('each by distance') entity.phys.b.position, 25, (d, e) ->
 			return if e is entity or !e.ai?
@@ -15,5 +15,5 @@ define ['inject', 'p2'], (inject, p2) ->
 		
 		inject.one('scale to max velocity') averagerepulsion
 		force = inject.one('calculate steering') entity.phys.b.velocity, averagerepulsion
-		p2.vec2.scale force, force, 2
+		p2.vec2.scale force, force, scale
 		inject.one('apply force') entity, force

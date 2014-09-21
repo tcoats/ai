@@ -22,6 +22,7 @@ define ['inject'], (inject) ->
 		register: (entity, n) =>
 			require [n], (type) =>
 				entity.ai = new type entity, n
+				entity.createdAt = new Date().getTime()
 				@entities.push entity.ai
 		
 	new AI()

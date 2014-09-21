@@ -5,9 +5,6 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>AI</title>
-	<script src="lib/p5.min.js"></script>
-	<script src="lib/require.min.js"></script>
-	<script src="init.js"></script>
 	<style>
 		html, body {
 			height: 100%;
@@ -21,5 +18,12 @@
 	</style>
 </head>
 <body>
+<script>
+	// cache busting for require.js
+	var require = { urlArgs : 'v=' + (new Date()).getTime() };
+</script>
+<script src="lib/p5.min.js"></script>
+<script src="lib/require.min.js"></script>
+<script src="init.js"></script>
 </body>
 </html>

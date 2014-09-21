@@ -48,6 +48,7 @@ define(['inject'], function(inject) {
       return require([n], (function(_this) {
         return function(type) {
           entity.ai = new type(entity, n);
+          entity.createdAt = new Date().getTime();
           return _this.entities.push(entity.ai);
         };
       })(this));
