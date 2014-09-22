@@ -10,6 +10,9 @@ define ['inject', 'colors'], (inject, colors) ->
 			background colors.bg
 			for entity in @entities
 				@[entity.n] entity.e() if @[entity.n]?
+			target = inject.one 'target'
+			if target?
+				@target target
 		
 		unit: (e) =>
 			fill colors.bg
@@ -31,6 +34,10 @@ define ['inject', 'colors'], (inject, colors) ->
 			ellipse e.phys.b.position[0], e.phys.b.position[1], 8, 8
 			if e.target?
 				line e.phys.b.position[0], e.phys.b.position[1], e.target[0], e.target[1]
+		
+		target: (t) =>
+			line t[0] + 5, t[1], t[0] - 5, t[1]
+			line t[0], t[1] + 5, t[0], t[1] - 5
 		
 		register: (entity, name) =>
 			entity.d = n: name, e: -> entity

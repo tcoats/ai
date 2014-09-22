@@ -10,10 +10,7 @@ define ->
 
       @bindings[key] = [] if !@bindings[key]?
 
-      if Array.isArray item
-        @bindings[key].push i for i in item
-      else
-        @bindings[key].push item
+      @bindings[key].push item
     
     one: (key) =>
       throw "[pminject] Nothing bound for '#{key}'!" if !@bindings[key]?

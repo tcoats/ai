@@ -43,6 +43,7 @@ window.setup = function() {
       setup();
     }
     render = true;
+    inject.bind('target', null);
     window.draw = function() {
       var step, _j, _len1, _ref1, _results;
       if (!render) {
@@ -56,8 +57,30 @@ window.setup = function() {
       }
       return _results;
     };
-    return window.mousePressed = function() {
-      return render = !render;
+    window.touchStarted = function() {
+      var target;
+      target = inject.one('target');
+      if (target != null) {
+        inject.clear('target');
+        return inject.bind('target', null);
+      } else {
+        return setTimeout(function() {
+          inject.clear('target');
+          return inject.bind('target', [touchX, touchY]);
+        }, 0);
+      }
+    };
+    window.touchMoved = function() {
+      inject.clear('target');
+      return inject.bind('target', [touchX, touchY]);
+    };
+    return window.touchEnded = function() {
+      var target;
+      target = inject.one('target');
+      if (target != null) {
+        inject.clear('target');
+        return inject.bind('target', [touchX, touchY]);
+      }
     };
   });
 };

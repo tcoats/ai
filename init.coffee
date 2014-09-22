@@ -34,8 +34,32 @@ window.setup = ->
 	requirejs ['inject', 'game'], (inject) ->
 		setup() for setup in inject.many 'setup'
 		render = yes
+		
+		inject.bind 'target', null
+		
 		window.draw = ->
 			return if !render
 			step() for step in inject.many 'step'
-		window.mousePressed = ->
-			render = !render
+		
+		window.touchStarted = ->
+			target = inject.one 'target'
+			
+			if target?
+				inject.clear 'target'
+				inject.bind 'target', null
+			else
+				setTimeout ->
+					inject.clear 'target'
+					inject.bind 'target', [touchX, touchY]
+				, 0
+		
+		window.touchMoved = ->
+			inject.clear 'target'
+			inject.bind 'target', [touchX, touchY]
+		
+		window.touchEnded = ->
+			target = inject.one 'target'
+			if target?
+				inject.clear 'target'
+				inject.bind 'target', [touchX, touchY]
+		

@@ -6,6 +6,7 @@ define(['inject', 'colors'], function(inject, colors) {
   Display = (function() {
     function Display() {
       this.register = __bind(this.register, this);
+      this.target = __bind(this.target, this);
       this.neo = __bind(this.neo, this);
       this.unit = __bind(this.unit, this);
       this.step = __bind(this.step, this);
@@ -15,19 +16,19 @@ define(['inject', 'colors'], function(inject, colors) {
     }
 
     Display.prototype.step = function() {
-      var entity, _i, _len, _ref, _results;
+      var entity, target, _i, _len, _ref;
       background(colors.bg);
       _ref = this.entities;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         entity = _ref[_i];
         if (this[entity.n] != null) {
-          _results.push(this[entity.n](entity.e()));
-        } else {
-          _results.push(void 0);
+          this[entity.n](entity.e());
         }
       }
-      return _results;
+      target = inject.one('target');
+      if (target != null) {
+        return this.target(target);
+      }
     };
 
     Display.prototype.unit = function(e) {
@@ -59,6 +60,11 @@ define(['inject', 'colors'], function(inject, colors) {
       if (e.target != null) {
         return line(e.phys.b.position[0], e.phys.b.position[1], e.target[0], e.target[1]);
       }
+    };
+
+    Display.prototype.target = function(t) {
+      line(t[0] + 5, t[1], t[0] - 5, t[1]);
+      return line(t[0], t[1] + 5, t[0], t[1] - 5);
     };
 
     Display.prototype.register = function(entity, name) {

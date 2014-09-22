@@ -9,13 +9,34 @@ define(['inject', 'p2'], function(inject, p2) {
       this.lineup = __bind(this.lineup, this);
       this.boid = __bind(this.boid, this);
       this.fuzzy = __bind(this.fuzzy, this);
+      this.seektarget = __bind(this.seektarget, this);
+      this.forcetarget = __bind(this.forcetarget, this);
       this.step = __bind(this.step, this);
       this.e = entity;
       this.n = n;
     }
 
     Unit.prototype.step = function() {
-      return this.fuzzy();
+      var target;
+      target = inject.one('target');
+      if (target == null) {
+        return;
+      }
+      return this.forcetarget(target);
+    };
+
+    Unit.prototype.forcetarget = function(target) {
+      var direction;
+      direction = [0, 0];
+      p2.vec2.sub(direction, target, this.e.phys.b.position);
+      inject.one('scale to max velocity')(direction);
+      return inject.one('apply force')(this.e, direction);
+    };
+
+    Unit.prototype.seektarget = function(target) {
+      var force;
+      force = inject.one('calculate seeking')(this.e.phys.b.position, target);
+      return inject.one('apply force')(this.e, force);
     };
 
     Unit.prototype.fuzzy = function() {

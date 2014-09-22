@@ -14,10 +14,10 @@ define [
 ], (inject, p2) ->
 	class Physics
 		constructor: ->
-			@maxvelocity = 100
-			@defaultsteeringforce = 1200
 			@entities = []
 			@world = new p2.World gravity: [0, 0]
+			@maxvelocity = inject.one 'max velocity'
+			@offsetwidth = 5
 			
 			inject.bind 'step', @step
 			inject.bind 'register physics', @register
@@ -31,10 +31,10 @@ define [
 				if length > @maxvelocity
 					p2.vec2.normalize entity.b.velocity, entity.b.velocity
 					p2.vec2.scale entity.b.velocity, entity.b.velocity, @maxvelocity
-				entity.b.position[0] = width + 10 if entity.b.position[0] < -10
-				entity.b.position[0] = -10 if entity.b.position[0] > width + 10
-				entity.b.position[1] = height + 10 if entity.b.position[1] < -10
-				entity.b.position[1] = -10 if entity.b.position[1] > height + 10
+				entity.b.position[0] = width + @offsetwidth if entity.b.position[0] < -@offsetwidth
+				entity.b.position[0] = -@offsetwidth if entity.b.position[0] > width + @offsetwidth
+				entity.b.position[1] = height + @offsetwidth if entity.b.position[1] < -@offsetwidth
+				entity.b.position[1] = -@offsetwidth if entity.b.position[1] > height + @offsetwidth
 		
 		register: (entity, n, p, v) =>
 			@[n] entity, p, v if @[n]?

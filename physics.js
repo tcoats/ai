@@ -9,12 +9,12 @@ define(['inject', 'p2', 'movement/rotate', 'movement/directions', 'movement/forc
       this.person = __bind(this.person, this);
       this.register = __bind(this.register, this);
       this.step = __bind(this.step, this);
-      this.maxvelocity = 100;
-      this.defaultsteeringforce = 1200;
       this.entities = [];
       this.world = new p2.World({
         gravity: [0, 0]
       });
+      this.maxvelocity = inject.one('max velocity');
+      this.offsetwidth = 5;
       inject.bind('step', this.step);
       inject.bind('register physics', this.register);
       inject.bind('each by distance', this.eachbydistance);
@@ -32,17 +32,17 @@ define(['inject', 'p2', 'movement/rotate', 'movement/directions', 'movement/forc
           p2.vec2.normalize(entity.b.velocity, entity.b.velocity);
           p2.vec2.scale(entity.b.velocity, entity.b.velocity, this.maxvelocity);
         }
-        if (entity.b.position[0] < -10) {
-          entity.b.position[0] = width + 10;
+        if (entity.b.position[0] < -this.offsetwidth) {
+          entity.b.position[0] = width + this.offsetwidth;
         }
-        if (entity.b.position[0] > width + 10) {
-          entity.b.position[0] = -10;
+        if (entity.b.position[0] > width + this.offsetwidth) {
+          entity.b.position[0] = -this.offsetwidth;
         }
-        if (entity.b.position[1] < -10) {
-          entity.b.position[1] = height + 10;
+        if (entity.b.position[1] < -this.offsetwidth) {
+          entity.b.position[1] = height + this.offsetwidth;
         }
-        if (entity.b.position[1] > height + 10) {
-          _results.push(entity.b.position[1] = -10);
+        if (entity.b.position[1] > height + this.offsetwidth) {
+          _results.push(entity.b.position[1] = -this.offsetwidth);
         } else {
           _results.push(void 0);
         }
