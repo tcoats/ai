@@ -6,3 +6,4 @@ Artificial Intelligence - sort of
 - http://pcgbook.com/
 - http://libcinder.org/about/
 - http://tomcc.github.io/2014/08/31/visibility-1.html
+- http://synaptic.juancazala.com/index.html
